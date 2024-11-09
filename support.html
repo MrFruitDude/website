@@ -25,6 +25,7 @@
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
+            padding-top: 80px;
         }
 
         .container {
@@ -33,12 +34,12 @@
             padding: 2rem;
         }
 
-        header {
+        .page-header {
             background: var(--gradient);
             color: white;
-            padding: 3rem 0;
+            padding: 4rem 0 3rem;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(167, 140, 211, 0.2);
+            text-align: center;
         }
 
         .logo-container {
@@ -177,10 +178,183 @@
                 padding: 1.5rem;
             }
         }
+
+        /* Updated Navigation Styles */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(167, 140, 211, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            height: 80px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 1;
+        }
+
+        /* Adjust header padding to account for fixed nav */
+        .hero {
+            padding-top: 9rem;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        .main-nav .logo {
+            width: 80px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .main-nav .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Mobile Navigation Styles */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger {
+            display: block;
+            position: relative;
+        }
+
+        .hamburger,
+        .hamburger::before,
+        .hamburger::after {
+            width: 2rem;
+            height: 3px;
+            background-color: var(--text-color);
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger::before,
+        .hamburger::after {
+            content: '';
+            position: absolute;
+            left: 0;
+        }
+
+        .hamburger::before {
+            top: -8px;
+        }
+
+        .hamburger::after {
+            bottom: -8px;
+        }
+
+        /* Active state for hamburger */
+        .mobile-nav-toggle[aria-expanded="true"] .hamburger {
+            transform: rotate(45deg);
+        }
+
+        .mobile-nav-toggle[aria-expanded="true"] .hamburger::before {
+            transform: rotate(90deg) translateX(8px);
+        }
+
+        .mobile-nav-toggle[aria-expanded="true"] .hamburger::after {
+            transform: rotate(90deg) translateX(-8px);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 80px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(167, 140, 211, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 2rem;
+                transition: right 0.3s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                color: white;
+                font-size: 1.2rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html">
+                <img src="herspace-logo.png" alt="HerSpace Logo" class="logo">
+            </a>
+            <button class="mobile-nav-toggle" aria-expanded="false" aria-controls="nav-links">
+                <span class="hamburger"></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#testimonials">Testimonials</a>
+                <a href="support.html">Support</a>
+                <a href="privacy-policy.html">Privacy</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
         <div class="container">
             <div class="logo-container">
                 <img src="herspace-logo.png" alt="HerSpace Logo" class="logo">
@@ -233,5 +407,33 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile navigation toggle
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileNavToggle.addEventListener('click', () => {
+            const isExpanded = mobileNavToggle.getAttribute('aria-expanded') === 'true';
+            mobileNavToggle.setAttribute('aria-expanded', !isExpanded);
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileNavToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.main-nav') && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                mobileNavToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    </script>
 </body>
 </html> 
